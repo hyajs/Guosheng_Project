@@ -5,7 +5,8 @@ const props = defineProps(['list'])
 interface CheckItems {
 	key: number
 	CheckAmount: Number
-	CheckName: String
+	CheckChildName: String
+	CheckFatherName: String
 	TechSpec: String
 	MeasureStandard: String
 }
@@ -18,8 +19,10 @@ const handleDeleteClick = (item: CheckItems) => {
 	<div>
 		<template v-for="(item, index) in props.list" :key="item.key">
 			<el-row>
-				<el-col :span="4">
+				<el-col :span="6">
 					<el-form-item
+						label-width="200px"
+						class="sublabel"
 						:label="'检查项目' + index"
 						:prop="'CheckItems.' + index + '.CheckAmount'"
 						:rules="{
@@ -28,11 +31,16 @@ const handleDeleteClick = (item: CheckItems) => {
 							trigger: 'blur',
 						}"
 					>
-						<el-input v-model="item.CheckAmount" clearable />
+						<el-input
+							v-model="item.CheckAmount"
+							clearable
+							placeholder="检验数量"
+						/>
 					</el-form-item>
 				</el-col>
-				<el-col :span="4">
+				<el-col :span="4" :offset="1">
 					<el-form-item
+						label-width="0px"
 						:prop="'CheckItems.' + index + '.CheckFatherName'"
 						:rules="{
 							required: true,
@@ -52,6 +60,7 @@ const handleDeleteClick = (item: CheckItems) => {
 
 				<el-col :span="4">
 					<el-form-item
+						label-width="0px"
 						:prop="'CheckItems.' + index + '.CheckChildName'"
 						:rules="{
 							required: true,
@@ -68,8 +77,9 @@ const handleDeleteClick = (item: CheckItems) => {
 						</el-select>
 					</el-form-item>
 				</el-col>
-				<el-col :span="4">
+				<el-col :span="3">
 					<el-form-item
+						label-width="0px"
 						:prop="'CheckItems.' + index + '.TechSpec'"
 						:rules="{
 							required: true,
@@ -84,8 +94,9 @@ const handleDeleteClick = (item: CheckItems) => {
 						/>
 					</el-form-item>
 				</el-col>
-				<el-col :span="4">
+				<el-col :span="3" :offset="1">
 					<el-form-item
+						label-width="0px"
 						:prop="'CheckItems.' + index + '.MeasureStandard'"
 						:rules="{
 							required: true,
@@ -110,7 +121,12 @@ const handleDeleteClick = (item: CheckItems) => {
 								effect="dark"
 								content="删除该条检查项目"
 								placement="top"
-								><el-button>删除</el-button>
+								><el-button type="danger"
+									>删除
+									<template #icon>
+										<div class="i-material-symbols:delete"></div>
+									</template>
+								</el-button>
 							</el-tooltip>
 						</div>
 					</template>
@@ -119,3 +135,13 @@ const handleDeleteClick = (item: CheckItems) => {
 		</template>
 	</div>
 </template>
+<style scoped>
+.el-form-item__label {
+	max-width: 100px;
+	margin: 0px;
+}
+.sublabel .el-form-item__content {
+	margin: 0px;
+	width: 100px;
+}
+</style>
