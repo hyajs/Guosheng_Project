@@ -7,6 +7,7 @@ export const http = axios.create({
 // 添加请求拦截器
 http.interceptors.request.use(
 	function (config) {
+		config.withCredentials = false
 		// 在发送请求之前做些什么
 		return config
 	},

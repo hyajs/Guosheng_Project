@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { FormInstance, FormRules } from 'element-plus'
+import { getDepartments } from '~/api/requests'
 defineOptions({
 	name: 'CreateForm',
 })
@@ -31,6 +32,24 @@ const ruleForm = reactive({
 		},
 	],
 })
+
+const useDropDownEffects = () => {
+	const departments = ref([])
+	const getDepartmentsData = async () => {
+		const { data, loading, error } = await getDepartments()
+		console.log(data, loading, error)
+		departments.value = data.value
+		console.log(departments.value)
+	}
+	onMounted(() => {
+		getDepartmentsData()
+	})
+	return {
+		departments,
+	}
+}
+
+const { departments } = useDropDownEffects()
 
 interface CheckItems {
 	key: number
@@ -203,15 +222,23 @@ const removeCheckItems = (item: CheckItems) => {
 				</el-col>
 			</el-form-item>
 
-			<el-form-item label="委托单位" prop="ConsignUnit">
+			<!-- <el-form-item label="委托单位" prop="ConsignUnit">
 				<el-col :span="8">
-					<el-input
+					{{ departments }}
+					<el-select
 						v-model="ruleForm.ConsignUnit"
+						placeholder="请选择部门"
 						clearable
-						placeholder="冷墩车间"
-					></el-input>
+					>
+						<el-option
+							v-for="item in departments.data"
+							:key="item.name"
+							:label="item.name"
+							:value="item.name"
+						/>
+					</el-select>
 				</el-col>
-			</el-form-item>
+			</el-form-item> -->
 
 			<el-form-item label="送样人" prop="Requester">
 				<el-col :span="8">
