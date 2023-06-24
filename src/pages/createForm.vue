@@ -72,7 +72,32 @@ const useDropDownEffects = () => {
 		surfaceProcessList,
 	}
 }
+const useSubmitEffects = () => {
+	const submitForm = async (formEl: FormInstance | undefined) => {
+		if (!formEl) return
+		await formEl.validate((valid, fields) => {
+			if (valid) {
+				http.post('/InspectionOrder', formEl).then((res) => {
+					console.log(res)
+				})
+				console.log('submit!')
+			} else {
+				console.log('error submit!', fields)
+			}
+		})
+	}
 
+	const resetForm = (formEl: FormInstance | undefined) => {
+		if (!formEl) return
+		formEl.resetFields()
+	}
+	return {
+		submitForm,
+		resetForm,
+	}
+}
+
+const { submitForm, resetForm } = useSubmitEffects()
 const { departments, productTextureList, surfaceProcessList } =
 	useDropDownEffects()
 
@@ -164,22 +189,6 @@ const rules = reactive<FormRules>({
 		},
 	],
 })
-
-const submitForm = async (formEl: FormInstance | undefined) => {
-	if (!formEl) return
-	await formEl.validate((valid, fields) => {
-		if (valid) {
-			console.log('submit!')
-		} else {
-			console.log('error submit!', fields)
-		}
-	})
-}
-
-const resetForm = (formEl: FormInstance | undefined) => {
-	if (!formEl) return
-	formEl.resetFields()
-}
 
 const addCheckItems = () => {
 	ruleForm.CheckItems.push({
