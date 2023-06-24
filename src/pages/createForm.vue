@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { FormInstance, FormRules } from 'element-plus'
-import { getDepartments } from '~/api/requests'
+import { useRequest } from 'vue-request'
 defineOptions({
 	name: 'CreateForm',
 })
@@ -33,23 +33,48 @@ const ruleForm = reactive({
 	],
 })
 
+// 请求下拉框数据
 const useDropDownEffects = () => {
 	const departments = ref([])
-	const getDepartmentsData = async () => {
-		const { data, loading, error } = await getDepartments()
-		console.log(data, loading, error)
-		departments.value = data.value
-		console.log(departments.value)
+	const productTextureList = ref([])
+	const surfaceProcessList = ref([])
+
+	const getDepartments = () => {
+		useRequest(() => http.get('/Department'), {
+			onSuccess: (res) => {
+				return (departments.value = res.data)
+			},
+		})
 	}
+	const getProductTexture = () => {
+		useRequest(() => http.get('/Product'), {
+			onSuccess: (res) => {
+				return (productTextureList.value = res.data)
+			},
+		})
+	}
+	const getSurfaceProcess = () => {
+		useRequest(() => http.get('/SurfaceProcessInfo'), {
+			onSuccess: (res) => {
+				return (surfaceProcessList.value = res.data)
+			},
+		})
+	}
+
 	onMounted(() => {
-		getDepartmentsData()
+		getDepartments()
+		getProductTexture()
+		getSurfaceProcess()
 	})
 	return {
 		departments,
+		productTextureList,
+		surfaceProcessList,
 	}
 }
 
-const { departments } = useDropDownEffects()
+const { departments, productTextureList, surfaceProcessList } =
+	useDropDownEffects()
 
 interface CheckItems {
 	key: number
@@ -186,7 +211,7 @@ const removeCheckItems = (item: CheckItems) => {
 			status-icon
 		>
 			<el-form-item label="委托检验单类型" prop="InspectionCheckType">
-				<el-col :span="8">
+				<el-col :xs="24" :sm="18" :md="12" :lg="6" :xl="6">
 					<el-select
 						v-model="ruleForm.InspectionCheckType"
 						placeholder="委托检验单类型"
@@ -198,7 +223,7 @@ const removeCheckItems = (item: CheckItems) => {
 				</el-col>
 			</el-form-item>
 			<el-form-item label="送检类型" prop="InspectionType">
-				<el-col :span="8">
+				<el-col :xs="24" :sm="18" :md="12" :lg="6" :xl="6">
 					<el-select
 						v-model="ruleForm.InspectionType"
 						placeholder="请选择送检类型"
@@ -210,7 +235,7 @@ const removeCheckItems = (item: CheckItems) => {
 				</el-col>
 			</el-form-item>
 			<el-form-item label="检验物品" prop="InspectionObject">
-				<el-col :span="8">
+				<el-col :xs="24" :sm="18" :md="12" :lg="6" :xl="6">
 					<el-select
 						v-model="ruleForm.InspectionObject"
 						placeholder="请选择检验物品"
@@ -222,26 +247,26 @@ const removeCheckItems = (item: CheckItems) => {
 				</el-col>
 			</el-form-item>
 
-			<!-- <el-form-item label="委托单位" prop="ConsignUnit">
-				<el-col :span="8">
-					{{ departments }}
+			<el-form-item label="委托单位" prop="ConsignUnit">
+				<el-col :xs="24" :sm="18" :md="12" :lg="6" :xl="6">
 					<el-select
 						v-model="ruleForm.ConsignUnit"
 						placeholder="请选择部门"
 						clearable
+						filterable
 					>
 						<el-option
-							v-for="item in departments.data"
+							v-for="item in departments"
 							:key="item.name"
 							:label="item.name"
 							:value="item.name"
 						/>
 					</el-select>
 				</el-col>
-			</el-form-item> -->
+			</el-form-item>
 
 			<el-form-item label="送样人" prop="Requester">
-				<el-col :span="8">
+				<el-col :xs="24" :sm="18" :md="12" :lg="6" :xl="6">
 					<el-input
 						v-model="ruleForm.Requester"
 						clearable
@@ -251,7 +276,7 @@ const removeCheckItems = (item: CheckItems) => {
 			</el-form-item>
 
 			<el-form-item label="要求完成日期">
-				<el-col :span="8">
+				<el-col :xs="24" :sm="18" :md="12" :lg="6" :xl="6">
 					<el-date-picker
 						v-model="ruleForm.FinishDate"
 						type="datetime"
@@ -275,49 +300,64 @@ const removeCheckItems = (item: CheckItems) => {
 			</el-form-item>
 
 			<el-form-item label="样品图号" prop="SampleImageNo">
-				<el-col :span="8">
+				<el-col :xs="24" :sm="18" :md="12" :lg="6" :xl="6">
 					<el-input v-model="ruleForm.SampleImageNo" clearable> </el-input>
 				</el-col>
 			</el-form-item>
 
 			<el-form-item label="样品名称" prop="SampleName">
-				<el-col :span="8">
+				<el-col :xs="24" :sm="18" :md="12" :lg="6" :xl="6">
 					<el-input v-model="ruleForm.SampleName" clearable> </el-input>
 				</el-col>
 			</el-form-item>
 
 			<el-form-item label="产品规格">
-				<el-col :span="8">
+				<el-col :xs="24" :sm="18" :md="12" :lg="6" :xl="6">
 					<el-input v-model="ruleForm.ProductSpec" clearable> </el-input>
 				</el-col>
 			</el-form-item>
 
 			<el-form-item label="产品材质" prop="ProductTexture">
-				<el-col :span="8">
+				<el-col :xs="24" :sm="18" :md="12" :lg="6" :xl="6">
 					<el-select
 						v-model="ruleForm.ProductTexture"
 						placeholder="请选择产品材质"
 						clearable
+						autocomplete
+						filterable
 					>
-						<!-- 后台请求 -->
+						<el-option
+							v-for="item in productTextureList"
+							:key="item.name"
+							:label="item.name"
+							:value="item.name"
+						/>
 					</el-select>
 				</el-col>
 			</el-form-item>
 
 			<el-form-item label="表面处理" prop="SurfaceTreatment">
-				<el-col :span="8">
+				<el-col :xs="24" :sm="18" :md="12" :lg="6" :xl="6">
 					<el-select
 						v-model="ruleForm.SurfaceTreatment"
 						placeholder="请选择表面处理类型"
 						clearable
+						filterable
 					>
+						<el-option
+							v-for="item in surfaceProcessList"
+							:key="item.name"
+							:label="item.name"
+							:value="item.name"
+						/>
+
 						<!-- 后台请求 -->
 					</el-select>
 				</el-col>
 			</el-form-item>
 
 			<el-form-item label="供应商" prop="Supplier">
-				<el-col :span="8">
+				<el-col :xs="24" :sm="18" :md="12" :lg="6" :xl="6">
 					<el-input v-model="ruleForm.Supplier" clearable> </el-input>
 				</el-col>
 			</el-form-item>

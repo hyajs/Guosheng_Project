@@ -20,7 +20,11 @@ const menus = [
 <template>
 	<nav class="flex flex-col">
 		<div class="mb-2 flex justify-center">
-			<img src="/logo.JPG" class="h-20 w-20 object-fill" alt="Guosheng logo" />
+			<img
+				src="/logo.jpg"
+				class="logo h-20 w-20 object-fill"
+				alt="Guosheng logo"
+			/>
 		</div>
 
 		<div class="mb-2 flex justify-center">
