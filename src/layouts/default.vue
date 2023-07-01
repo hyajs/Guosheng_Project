@@ -1,6 +1,6 @@
 <template>
 	<div class="flex">
-		<Navigation class="mt-5 max-w-sm" />
+		<Sidebar class="mt-5" />
 		<div class="mt-5 w-screen flex flex-col justify-center">
 			<router-view v-slot="{ Component }">
 				<transition name="fade" mode="out-in">
@@ -9,6 +9,9 @@
 			</router-view>
 		</div>
 	</div>
+	<footer class="absolute bottom-5 mx-auto text-center container">
+		Guosheng Project
+	</footer>
 </template>
 
 <style>

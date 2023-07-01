@@ -18,13 +18,11 @@ const menus = [
 </script>
 
 <template>
-	<nav class="flex flex-col">
+	<nav class="w-50 flex flex-col">
 		<div class="mb-2 flex justify-center">
-			<img
-				src="/logo.jpg"
-				class="logo h-20 w-20 object-fill"
-				alt="Guosheng logo"
-			/>
+			<router-link to="/"
+				><img src="/logo.jpg" class=" w-20 logo object-fill" alt="Guosheng logo"
+			/></router-link>
 		</div>
 
 		<div class="mb-2 flex justify-center">
